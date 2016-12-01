@@ -33,6 +33,12 @@ function StatsDPlugin(rawConfig, ee) {
 
   ee.on('done', function(stats) {
     debug('done');
+    if (stats.scenariosCreated > stats.scenariosCompleted) {
+      metrics.increment(config.prefix+'.failedScenarios');
+    }
+    if (stats.scenariosCreated === stats.scenariosCompleted) {
+      metrics.increment(config.prefix+'.successfulScenarios');
+    }
     if (config.closingTimeout > 0) {
       setTimeout(function () {
         metrics.close();
